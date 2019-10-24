@@ -101,13 +101,13 @@ if (!empty($_GET['edit'])) {
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="type" value="rent" checked="">
+                    <input type="radio" class="form-check-input" name="type" value="rent" <?php echo (empty($row['type']) ? 'checked=""' : (($row['type']=='rent') ? 'checked=""' : '')) ?>>
                     For Rent
                 </label>
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="type" value="sale">
+                    <input type="radio" class="form-check-input" name="type" value="sale" <?php echo (empty($row['type']) ? '' : (($row['type']=='sale') ? 'checked=""' : '')) ?>>
                     For Sale
                 </label>
             </div>
