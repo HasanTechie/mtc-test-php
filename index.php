@@ -7,9 +7,16 @@ if (isset($_POST['submit'])) {
     if ($_POST['action'] == 'add') {
         addProperty();
     }
+    if ($_POST['action'] == 'edit') {
+        editProperty();
+    }
 }
 if (!empty($_GET['delete'])) {
     deleteProperty();
+}
+
+if (!empty($_GET['edit'])) {
+    $row = editProperty();
 }
 
 ?>
@@ -18,7 +25,7 @@ if (!empty($_GET['delete'])) {
 <head>
     <meta charset="UTF-8">
     <title>MTC Trail Task 2019 | PHP</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/cosmo/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
@@ -40,27 +47,33 @@ if (!empty($_GET['delete'])) {
         <fieldset>
             <div class="form-group w-25">
                 <label>County</label>
-                <input type="text" name="county" class="form-control" placeholder="Enter county">
+                <input type="text" name="county" class="form-control" placeholder="Enter county"
+                       value="<?php echo(!empty($row['county']) ? $row['county'] : null); ?>">
             </div>
             <div class="form-group w-25">
                 <label>Country</label>
-                <input type="text" name="country" class="form-control" placeholder="Enter country">
+                <input type="text" name="country" class="form-control" placeholder="Enter country"
+                       value="<?php echo(!empty($row['country']) ? $row['country'] : null); ?>">
             </div>
             <div class="form-group w-25">
                 <label>Town</label>
-                <input type="text" name="town" class="form-control" placeholder="Enter Town">
+                <input type="text" name="town" class="form-control" placeholder="Enter Town"
+                       value="<?php echo(!empty($row['town']) ? $row['town'] : null); ?>">
             </div>
             <div class="form-group w-25">
                 <label>Postcode</label>
-                <input type="text" name="image_thumbnail" class="form-control" placeholder="Enter Postcode">
+                <input type="text" name="postcode" class="form-control" placeholder="Enter Postcode"
+                       value="<?php echo(!empty($row['postcode']) ? $row['postcode'] : null); ?>">
             </div>
             <div class="form-group w-50">
                 <label for="description">Description</label>
-                <textarea class="form-control" name="description" rows="3" placeholder="Enter Description"></textarea>
+                <textarea class="form-control" name="description" rows="3"
+                          placeholder="Enter Description"><?php echo(!empty($row['description']) ? $row['description'] : null); ?></textarea>
             </div>
             <div class="form-group w-50">
                 <label>Address</label>
-                <input type="text" name="address" class="form-control" placeholder="Enter Address">
+                <input type="text" name="address" class="form-control" placeholder="Enter Address"
+                       value="<?php echo(!empty($row['address']) ? $row['address'] : null); ?>">
             </div>
             <div class="form-group">
                 <label for="exampleInputFile">Image File</label>
@@ -94,7 +107,8 @@ if (!empty($_GET['delete'])) {
             </div>
             <div class="form-group w-25">
                 <label>price</label>
-                <input type="number" name="price" class="form-control" placeholder="Enter price">
+                <input type="number" name="price" class="form-control" placeholder="Enter price"
+                       value="<?php echo(!empty($row['price']) ? $row['price'] : null); ?>">
             </div>
             <div class="form-group w-25">
                 <label for="property_type_id">Property type</label>
@@ -120,13 +134,16 @@ if (!empty($_GET['delete'])) {
                     For Sale
                 </label>
             </div>
-            <input type="hidden" name="action" value="add">
+            <input type="hidden" name="action" value="<?php echo(!empty($row['id']) ? 'edit' : 'add'); ?>">
+            <input type="hidden" name="id" value="<?php echo(!empty($row['id']) ? $row['id'] : null); ?>">
             <br/>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary" name="submit">Submit Data</button>
+                <button type="submit" class="btn btn-<?php echo(!empty($row) ? 'primary' : 'success') ?>"
+                        name="submit"><?php echo(!empty($row) ? 'Update Property' : 'Add Property') ?></button>
             </div>
         </fieldset>
     </form>
+    <br/>
     <h1>Property List</h1>
     <table class="table table-hover">
         <thead>
@@ -167,7 +184,7 @@ if (!empty($_GET['delete'])) {
                         <td>" . $row['price'] . "</td>
                         <td>" . $row['property_type_id'] . "</td>
                         <td>" . $row['type'] . "</td>
-                        <td style='white-space: nowrap;'><a href='index.php?edit=" . $row['id'] . "' class='btn btn-info'>Edit</a> <a href='index.php?delete=" . $row['id'] . "' class='btn btn-danger'>Delete</a></td>
+                        <td style='white-space: nowrap;'><a href='index.php?edit=" . $row['id'] . "' class='btn btn-primary'>Edit</a> <a href='index.php?delete=" . $row['id'] . "' class='btn btn-danger'>Delete</a></td>
                     </tr>";
             }
             echo $output;

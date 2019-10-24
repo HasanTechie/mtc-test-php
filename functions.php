@@ -46,9 +46,28 @@ function addProperty()
     or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
 
     if (mysqli_affected_rows($connection) > 0) {
-        $_SESSION['message']='Property has been added';
-        $_SESSION['message_type']='success';
+        $_SESSION['message'] = 'Property has been added';
+        $_SESSION['message_type'] = 'success';
     }
+}
+
+function editProperty()
+{
+    global $connection;
+
+    $query = "SELECT * FROM properties WHERE id=" . antiInjection($_GET['edit']) . ";";
+    $result = mysqli_query($connection, $query)
+    or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
+
+    if (count($result)) {
+        $row = mysqli_fetch_assoc($result);
+        return $row;
+    }
+
+//    if (mysqli_affected_rows($connection) > 0) {
+//        $_SESSION['message']='Property record has been updated';
+//        $_SESSION['message_type']='info';
+//    }
 }
 
 function deleteProperty()
@@ -60,7 +79,7 @@ function deleteProperty()
     or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
 
     if (mysqli_affected_rows($connection) > 0) {
-        $_SESSION['message']='Property record has been deleted';
-        $_SESSION['message_type']='danger';
+        $_SESSION['message'] = 'Property record has been deleted';
+        $_SESSION['message_type'] = 'danger';
     }
 }
