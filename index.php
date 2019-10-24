@@ -16,7 +16,7 @@ if (!empty($_GET['delete'])) {
 }
 
 if (!empty($_GET['edit'])) {
-    $row = editProperty();
+    $row = displayEditProperty();
 }
 
 ?>

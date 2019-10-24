@@ -51,7 +51,7 @@ function addProperty()
     }
 }
 
-function editProperty()
+function displayEditProperty()
 {
     global $connection;
 
@@ -68,6 +68,40 @@ function editProperty()
 //        $_SESSION['message']='Property record has been updated';
 //        $_SESSION['message_type']='info';
 //    }
+}
+
+function editProperty()
+{
+    global $connection;
+
+
+    $dE1 = [];
+    foreach ($_POST as $key => $value) {
+        $dE1[$key] = antiInjection($value);
+    }
+
+    $query = "UPDATE properties SET 
+                     county = '" . $dE1['county'] . "',
+                     country = '" . $dE1['country'] . "',
+                     town = '" . $dE1['town'] . "',
+                     description = '" . $dE1['description'] . "',
+                     address = '" . $dE1['address'] . "',
+                     image_full = '" . $dE1['image_full'] . "',
+                     county = '" . $dE1['county'] . "',
+                     num_bedrooms = '" . $dE1['num_bedrooms'] . "',
+                     num_bathrooms = '" . $dE1['num_bathrooms'] . "',
+                     price = '" . $dE1['price'] . "',
+                     property_type_id = '" . $dE1['property_type_id'] . "',
+                     type = '" . $dE1['type'] . "',
+                     updated_at = now() ";
+
+    $query .= "WHERE id='" . antiInjection($_POST['id']) . "' ;";
+
+    $result = mysqli_query($connection, $query) or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
+    if (mysqli_affected_rows($connection) > 0) {
+        $_SESSION['message'] = 'Property record has been updated';
+        $_SESSION['message_type'] = 'success';
+    }
 }
 
 function deleteProperty()
