@@ -48,32 +48,32 @@ if (!empty($_GET['edit'])) {
             <div class="form-group w-25">
                 <label>County</label>
                 <input type="text" name="county" class="form-control" placeholder="Enter county"
-                       value="<?php echo(!empty($row['county']) ? $row['county'] : null); ?>">
+                       value="<?php echo(!empty($row['county']) ? $row['county'] : null); ?>" required>
             </div>
             <div class="form-group w-25">
                 <label>Country</label>
                 <input type="text" name="country" class="form-control" placeholder="Enter country"
-                       value="<?php echo(!empty($row['country']) ? $row['country'] : null); ?>">
+                       value="<?php echo(!empty($row['country']) ? $row['country'] : null); ?>" required>
             </div>
             <div class="form-group w-25">
                 <label>Town</label>
                 <input type="text" name="town" class="form-control" placeholder="Enter Town"
-                       value="<?php echo(!empty($row['town']) ? $row['town'] : null); ?>">
+                       value="<?php echo(!empty($row['town']) ? $row['town'] : null); ?>" required>
             </div>
             <div class="form-group w-50">
                 <label for="description">Description</label>
                 <textarea class="form-control" name="description" rows="3"
-                          placeholder="Enter Description"><?php echo(!empty($row['description']) ? $row['description'] : null); ?></textarea>
+                          placeholder="Enter Description" required><?php echo(!empty($row['description']) ? $row['description'] : null); ?></textarea>
             </div>
             <div class="form-group w-50">
                 <label>Address</label>
                 <input type="text" name="address" class="form-control" placeholder="Enter Address"
-                       value="<?php echo(!empty($row['address']) ? $row['address'] : null); ?>">
+                       value="<?php echo(!empty($row['address']) ? $row['address'] : null); ?>" required>
             </div>
             <div class="form-group">
                 <label for="exampleInputFile">Image File</label>
                 <input type="file" class="form-control-file" name="image" id="image_full"
-                       aria-describedby="fileHelp">
+                       aria-describedby="fileHelp" required>
                 <small id="fileHelp" class="form-text text-muted">Image will be converted to thumbnail.</small>
             </div>
             <div class="form-group w-25">
@@ -88,7 +88,7 @@ if (!empty($_GET['edit'])) {
             <div class="form-group w-25">
                 <label>price</label>
                 <input type="number" name="price" class="form-control" placeholder="Enter price"
-                       value="<?php echo(!empty($row['price']) ? $row['price'] : null); ?>">
+                       value="<?php echo(!empty($row['price']) ? $row['price'] : null); ?>" required>
             </div>
             <div class="form-group w-25">
                 <label for="property_type_id">Property type</label>
