@@ -21,7 +21,7 @@ if (isset($_POST['submit'])) {
 <body>
 <div class="container">
     <form action="" method="POST">
-        <h1>Add Property</h1>
+        <h1>Add/Edit Property</h1>
         <fieldset>
             <div class="form-group w-25">
                 <label>County</label>
@@ -108,10 +108,60 @@ if (isset($_POST['submit'])) {
             <input type="hidden" name="action" value="add">
             <br/>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary" name="submit">Add Property</button>
+                <button type="submit" class="btn btn-primary" name="submit">Submit Data</button>
             </div>
         </fieldset>
     </form>
+    <h1>Property List</h1>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">County</th>
+            <th scope="col">Country</th>
+            <th scope="col">Town</th>
+            <th scope="col">Description</th>
+            <th scope="col">Address</th>
+            <th scope="col">Image</th>
+            <th scope="col">Bedrooms</th>
+            <th scope="col">Bathrooms</th>
+            <th scope="col">Price</th>
+            <th scope="col" style="white-space: nowrap;">P. type</th>
+            <th scope="col">Type</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $query = "SELECT * FROM properties;";
+
+        $result = mysqli_query($connection, $query)
+        or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
+        if (mysqli_num_rows($result) >= 0) {
+            $output = "";
+            while ($row = mysqli_fetch_assoc($result)) {
+                $output .=
+                    "<tr>
+                        <td>" . $row['county'] . "</td>
+                        <td>" . truncate($row['country'],14) . "</td>
+                        <td>" . $row['town'] . "</td>
+                        <td>" . truncate($row['description'],40) . "</td>
+                        <td>" . $row['address'] . "</td>
+                        <td>" . $row['image_full'] . "</td>
+                        <td>" . $row['num_bedrooms'] . "</td>
+                        <td>" . $row['num_bathrooms'] . "</td>
+                        <td>" . $row['price'] . "</td>
+                        <td>" . $row['property_type_id'] . "</td>
+                        <td>" . $row['type'] . "</td>
+                        <td style='white-space: nowrap;'><a href='index.php?edit=".$row['id']."' class='btn btn-info'>Edit</a> <a href='index.php?delete=".$row['id']."' class='btn btn-danger'>Delete</a></td>
+                    </tr>";
+            }
+            echo $output;
+        }
+        ?>
+        </tbody>
+    </table>
+
+
 </div>
 </body>
 </html>
