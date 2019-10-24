@@ -83,27 +83,12 @@ if (!empty($_GET['edit'])) {
             </div>
             <div class="form-group w-25">
                 <label for="num_bedrooms">Select Number of Bedrooms</label>
-                <select class="form-control" name="num_bedrooms">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                </select>
+                <?php echo generateSelect('num_bedrooms', range(0,12), (!empty($row['num_bedrooms']) ? $row['num_bedrooms'] : 0)); ?>
             </div>
+
             <div class="form-group w-25">
                 <label for="num_bathrooms">Select Number of Bathrooms</label>
-                <select class="form-control" name="num_bathrooms">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                </select>
+                <?php echo generateSelect('num_bathrooms', range(0,12), (!empty($row['num_bathrooms']) ? $row['num_bathrooms'] : 0)); ?>
             </div>
             <div class="form-group w-25">
                 <label>price</label>
@@ -112,15 +97,7 @@ if (!empty($_GET['edit'])) {
             </div>
             <div class="form-group w-25">
                 <label for="property_type_id">Property type</label>
-                <select class="form-control" name="property_type_id">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                </select>
+                <?php echo generateSelect('property_type_id', range(0,7), (!empty($row['property_type_id']) ? $row['property_type_id'] : 0)); ?>
             </div>
             <div class="form-check">
                 <label class="form-check-label">

@@ -117,3 +117,16 @@ function deleteProperty()
         $_SESSION['message_type'] = 'danger';
     }
 }
+
+function generateSelect($name = '', $options = array(), $default = 1) {
+    $html = '<select class="form-control" name="'.$name.'">';
+    foreach ($options as $option => $value) {
+        if ($option == $default) {
+            $html .= '<option value='.$value.' selected="selected">'.$option.'</option>';
+        } else {
+            $html .= '<option value='.$value.'>'.$option.'</option>';
+        }
+    }
+    $html .= '</select>';
+    return $html;
+}
