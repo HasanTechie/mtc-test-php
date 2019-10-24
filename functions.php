@@ -64,7 +64,11 @@ function displayEditProperty()
 
     if (count($result)) {
         $row = mysqli_fetch_assoc($result);
-        return $row;
+        $dE1 = [];
+        foreach ($row as $key => $value) {
+            $dE1[$key] = antiXSS($value);
+        }
+        return $dE1;
     }
 }
 
