@@ -11,4 +11,9 @@ if (mysqli_connect_errno()) {
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
+if (!file_exists('uploads')) {
+    mkdir('uploads', 0777, true);
+    mkdir('uploads/thumbs', 0777, true);
+}
 ?>

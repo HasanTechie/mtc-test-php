@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
-require 'db.php';
+require 'basic.php';
 require 'functions.php';
 
 if (isset($_POST['submit'])) {
@@ -42,7 +42,7 @@ if (!empty($_GET['edit'])) {
         <?php
         unset($_SESSION['message']);
     } ?>
-    <form action="" method="POST">
+    <form action="" method="POST" enctype="multipart/form-data">
         <h1>Add/Edit Property</h1>
         <fieldset>
             <div class="form-group w-25">
@@ -77,7 +77,7 @@ if (!empty($_GET['edit'])) {
             </div>
             <div class="form-group">
                 <label for="exampleInputFile">Image File</label>
-                <input type="file" class="form-control-file" name="image_full" id="image_full"
+                <input type="file" class="form-control-file" name="image" id="image_full"
                        aria-describedby="fileHelp">
                 <small id="fileHelp" class="form-text text-muted">Image will be converted to thumbnail.</small>
             </div>
@@ -131,6 +131,7 @@ if (!empty($_GET['edit'])) {
             <th scope="col">Description</th>
             <th scope="col">Address</th>
             <th scope="col">Image</th>
+            <th scope="col">Thumbnail</th>
             <th scope="col">Bedrooms</th>
             <th scope="col">Bathrooms</th>
             <th scope="col">Price</th>
@@ -156,6 +157,7 @@ if (!empty($_GET['edit'])) {
                         <td>" . truncate($row['description'], 40) . "</td>
                         <td>" . $row['address'] . "</td>
                         <td>" . $row['image_full'] . "</td>
+                        <td>" . $row['image_thumbnail'] . "</td>
                         <td>" . $row['num_bedrooms'] . "</td>
                         <td>" . $row['num_bathrooms'] . "</td>
                         <td>" . $row['price'] . "</td>

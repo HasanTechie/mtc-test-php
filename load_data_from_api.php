@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
-require 'db.php';
+require 'basic.php';
 require 'functions.php';
 
 use GuzzleHttp\Client;
