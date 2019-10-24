@@ -1,11 +1,11 @@
 <?php
-function antiInjection($str)
+function antiInjection($str) // for preventing SQL injections
 {
     global $connection;
     return mysqli_real_escape_string($connection, $str);
 }
 
-function antiXSS($str)
+function antiXSS($str) //to preventing Cross-site scripting (XSS)
 {
     return htmlspecialchars($str);
 }
@@ -15,7 +15,7 @@ function truncate($string, $length, $dots = "...")
     return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
 }
 
-function addProperty()
+function addProperty() //add property to database
 {
 
     global $connection;
@@ -54,7 +54,7 @@ function addProperty()
     }
 }
 
-function displayEditProperty()
+function displayEditProperty() //display edit property form values
 {
     global $connection;
 
@@ -72,7 +72,7 @@ function displayEditProperty()
     }
 }
 
-function editProperty()
+function editProperty() //updated selected property
 {
     global $connection;
 
@@ -117,7 +117,7 @@ function editProperty()
     }
 }
 
-function deleteProperty()
+function deleteProperty() //delete selected property
 {
     global $connection;
 
@@ -131,7 +131,7 @@ function deleteProperty()
     }
 }
 
-function generateSelect($name = '', $options = array(), $default = 1)
+function generateSelect($name = '', $options = array(), $default = 1) //preselect the selected option from database
 {
     $html = '<select class="form-control" name="' . $name . '">';
     foreach ($options as $option => $value) {
@@ -145,7 +145,7 @@ function generateSelect($name = '', $options = array(), $default = 1)
     return $html;
 }
 
-function uploadFile($fileName)
+function uploadFile($fileName) //upload image and thumbnail
 {
     $fileExtArr = explode('.', $fileName);//make array of file.name.ext as    array(file,name,ext)
     $fileExt = strtolower(end($fileExtArr));//get last item of array of user file input
@@ -171,16 +171,16 @@ function uploadFile($fileName)
     if (empty($errors)) {
         move_uploaded_file($fileTmp, 'uploads/' . $fileName);
 
-        //here we can create thumbnails by create_thumb() function
+        //here we can create thumbnails by createThumb() function
         //it takes 5 parametes
         //1- original image, 2- file extension, 3-thumb full path, 4- max width of thumb, 5-max height of thumb
-        create_thumb('uploads/' . $fileName, $fileExt, 'uploads/thumbs/thumb_' . $fileName, 200, 200);
+        createThumb('uploads/' . $fileName, $fileExt, 'uploads/thumbs/thumb_' . $fileName, 200, 200);
     } else {
         echo 'Some Error Occured: <br>' . implode('<br>', $errors);
     }
 }
 
-function create_thumb($target, $ext, $thumb_path, $w, $h)
+function createThumb($target, $ext, $thumb_path, $w, $h) //create thumbnail
 {
     list($w_orig, $h_orig) = getimagesize($target);
     $scale_ratio = $w_orig / $h_orig;
