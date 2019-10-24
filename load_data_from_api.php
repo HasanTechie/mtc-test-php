@@ -9,8 +9,10 @@ mysqli_query($connection, 'TRUNCATE TABLE properties'); //Truncate table before 
 
 $client = new Client();
 
+$apiKey = getenv('API_KEY');
+
 for ($i = 1; $i <= 10; $i++) { //Looping through all pages of api
-    $res = $client->request('GET', "http://trialapi.craig.mtcdevserver.com/api/properties?page[number]=$i&page[size]=100&api_key=3NLTTNlXsi6rBWl7nYGluOdkl2htFHug"); //doing request to server API via Guzzle Client
+    $res = $client->request('GET', "http://trialapi.craig.mtcdevserver.com/api/properties?page[number]=$i&page[size]=100&api_key=$apiKey"); //doing request to server API via Guzzle Client
     $response = json_decode($res->getBody());
 
     $dataArray = [];
