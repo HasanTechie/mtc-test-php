@@ -5,8 +5,11 @@ require 'functions.php';
 
 if (isset($_POST['submit'])) {
     if ($_POST['action'] == 'add') {
-        addData();
+        addProperty();
     }
+}
+if (!empty($_GET['delete'])) {
+    deleteProperty();
 }
 
 ?>
@@ -16,10 +19,22 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <title>MTC Trail Task 2019 | PHP</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/flatly/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container">
+    <?php if (isset($_SESSION['message'])) { ?>
+        <br/>
+        <div class="alert alert-<?php echo $_SESSION['message_type'] ?> alert-dismissible fade show" role="alert">
+            <strong><?php echo $_SESSION['message'] ?></strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <?php
+        unset($_SESSION['message']);
+    } ?>
     <form action="" method="POST">
         <h1>Add/Edit Property</h1>
         <fieldset>
@@ -132,7 +147,7 @@ if (isset($_POST['submit'])) {
         </thead>
         <tbody>
         <?php
-        $query = "SELECT * FROM properties;";
+        $query = "SELECT * FROM properties ORDER BY id DESC;";
 
         $result = mysqli_query($connection, $query)
         or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
@@ -142,9 +157,9 @@ if (isset($_POST['submit'])) {
                 $output .=
                     "<tr>
                         <td>" . $row['county'] . "</td>
-                        <td>" . truncate($row['country'],14) . "</td>
+                        <td>" . truncate($row['country'], 14) . "</td>
                         <td>" . $row['town'] . "</td>
-                        <td>" . truncate($row['description'],40) . "</td>
+                        <td>" . truncate($row['description'], 40) . "</td>
                         <td>" . $row['address'] . "</td>
                         <td>" . $row['image_full'] . "</td>
                         <td>" . $row['num_bedrooms'] . "</td>
@@ -152,7 +167,7 @@ if (isset($_POST['submit'])) {
                         <td>" . $row['price'] . "</td>
                         <td>" . $row['property_type_id'] . "</td>
                         <td>" . $row['type'] . "</td>
-                        <td style='white-space: nowrap;'><a href='index.php?edit=".$row['id']."' class='btn btn-info'>Edit</a> <a href='index.php?delete=".$row['id']."' class='btn btn-danger'>Delete</a></td>
+                        <td style='white-space: nowrap;'><a href='index.php?edit=" . $row['id'] . "' class='btn btn-info'>Edit</a> <a href='index.php?delete=" . $row['id'] . "' class='btn btn-danger'>Delete</a></td>
                     </tr>";
             }
             echo $output;

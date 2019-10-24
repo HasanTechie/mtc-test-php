@@ -15,7 +15,7 @@ function truncate($string, $length, $dots = "...")
     return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
 }
 
-function addData()
+function addProperty()
 {
 
     global $connection;
@@ -28,7 +28,7 @@ function addData()
     $query = "INSERT INTO properties(uuid, county, country, town, description, address, image_full, image_thumbnail, num_bedrooms, num_bathrooms, price, property_type_id, type, created_at, updated_at)
                 VALUES (";
 
-    $query .= "'" . uniqid(mt_rand(),true) . "','" .
+    $query .= "'" . uniqid(mt_rand(), true) . "','" .
         $dA1['county'] . "','" .
         $dA1['country'] . "','" .
         $dA1['town'] . "','" .
@@ -45,4 +45,22 @@ function addData()
     $result = mysqli_query($connection, $query)
     or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
 
+    if (mysqli_affected_rows($connection) > 0) {
+        $_SESSION['message']='Property has been added';
+        $_SESSION['message_type']='success';
+    }
+}
+
+function deleteProperty()
+{
+    global $connection;
+
+    $query = "DELETE FROM properties WHERE id=" . antiInjection($_GET['delete']) . ";";
+    $result = mysqli_query($connection, $query)
+    or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
+
+    if (mysqli_affected_rows($connection) > 0) {
+        $_SESSION['message']='Property record has been deleted';
+        $_SESSION['message_type']='danger';
+    }
 }

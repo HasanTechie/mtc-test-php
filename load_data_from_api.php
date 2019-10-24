@@ -43,7 +43,7 @@ for ($i = 1; $i <= 10; $i++) { //Looping through all pages of api
         $result = mysqli_query($connection, $query)
         or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
     }
-    if (mysqli_affected_rows($connection) >= 1) {
+    if (mysqli_affected_rows($connection) > 0) {
         echo "Successfully added page: $i" . "<br>";
     }
 }
