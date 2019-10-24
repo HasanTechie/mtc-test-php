@@ -60,11 +60,6 @@ if (!empty($_GET['edit'])) {
                 <input type="text" name="town" class="form-control" placeholder="Enter Town"
                        value="<?php echo(!empty($row['town']) ? $row['town'] : null); ?>">
             </div>
-            <div class="form-group w-25">
-                <label>Postcode</label>
-                <input type="text" name="postcode" class="form-control" placeholder="Enter Postcode"
-                       value="<?php echo(!empty($row['postcode']) ? $row['postcode'] : null); ?>">
-            </div>
             <div class="form-group w-50">
                 <label for="description">Description</label>
                 <textarea class="form-control" name="description" rows="3"
@@ -83,12 +78,12 @@ if (!empty($_GET['edit'])) {
             </div>
             <div class="form-group w-25">
                 <label for="num_bedrooms">Select Number of Bedrooms</label>
-                <?php echo generateSelect('num_bedrooms', range(0,12), (!empty($row['num_bedrooms']) ? $row['num_bedrooms'] : 0)); ?>
+                <?php echo generateSelect('num_bedrooms', range(0, 12), (!empty($row['num_bedrooms']) ? $row['num_bedrooms'] : 0)); ?>
             </div>
 
             <div class="form-group w-25">
                 <label for="num_bathrooms">Select Number of Bathrooms</label>
-                <?php echo generateSelect('num_bathrooms', range(0,12), (!empty($row['num_bathrooms']) ? $row['num_bathrooms'] : 0)); ?>
+                <?php echo generateSelect('num_bathrooms', range(0, 12), (!empty($row['num_bathrooms']) ? $row['num_bathrooms'] : 0)); ?>
             </div>
             <div class="form-group w-25">
                 <label>price</label>
@@ -97,17 +92,19 @@ if (!empty($_GET['edit'])) {
             </div>
             <div class="form-group w-25">
                 <label for="property_type_id">Property type</label>
-                <?php echo generateSelect('property_type_id', range(0,7), (!empty($row['property_type_id']) ? $row['property_type_id'] : 0)); ?>
+                <?php echo generateSelect('property_type_id', range(0, 7), (!empty($row['property_type_id']) ? $row['property_type_id'] : 0)); ?>
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="type" value="rent" <?php echo (empty($row['type']) ? 'checked=""' : (($row['type']=='rent') ? 'checked=""' : '')) ?>>
+                    <input type="radio" class="form-check-input" name="type"
+                           value="rent" <?php echo(empty($row['type']) ? 'checked=""' : (($row['type'] == 'rent') ? 'checked=""' : '')) ?>>
                     For Rent
                 </label>
             </div>
             <div class="form-check">
                 <label class="form-check-label">
-                    <input type="radio" class="form-check-input" name="type" value="sale" <?php echo (empty($row['type']) ? '' : (($row['type']=='sale') ? 'checked=""' : '')) ?>>
+                    <input type="radio" class="form-check-input" name="type"
+                           value="sale" <?php echo(empty($row['type']) ? '' : (($row['type'] == 'sale') ? 'checked=""' : '')) ?>>
                     For Sale
                 </label>
             </div>
@@ -149,6 +146,19 @@ if (!empty($_GET['edit'])) {
         if (mysqli_num_rows($result) >= 0) {
             $output = "";
             while ($row = mysqli_fetch_assoc($result)) {
+
+                if (filter_var($row['image_full'], FILTER_VALIDATE_URL)) {
+                    $imageURL = "<a href='" . $row['image_full'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Image</button></a>";
+                } else {
+                    $imageURL = "<a href='uploads/" . $row['image_full'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Image</button></a>";
+                }
+
+                if (filter_var($row['image_thumbnail'], FILTER_VALIDATE_URL)) {
+                    $thumbnailImageURL = "<a href='" . $row['image_thumbnail'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Thumbnail</button></a>";
+                } else {
+                    $thumbnailImageURL = "<a href='uploads/thumbs/" . $row['image_thumbnail'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Thumbnail</button></a>";
+                }
+
                 $output .=
                     "<tr>
                         <td>" . $row['county'] . "</td>
@@ -156,8 +166,8 @@ if (!empty($_GET['edit'])) {
                         <td>" . $row['town'] . "</td>
                         <td>" . truncate($row['description'], 40) . "</td>
                         <td>" . $row['address'] . "</td>
-                        <td>" . $row['image_full'] . "</td>
-                        <td>" . $row['image_thumbnail'] . "</td>
+                        <td>" . $imageURL . "</td>
+                        <td>" . $thumbnailImageURL . "</td>
                         <td>" . $row['num_bedrooms'] . "</td>
                         <td>" . $row['num_bathrooms'] . "</td>
                         <td>" . $row['price'] . "</td>
