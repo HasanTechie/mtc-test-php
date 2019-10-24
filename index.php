@@ -117,6 +117,10 @@ if (!empty($_GET['edit'])) {
             </div>
         </fieldset>
     </form>
+    <a href="load_data_from_api.php" onclick="return confirm('Are you sure?')">
+        <button class="btn btn-secondary">Reload data from API</button>
+    </a>
+    <br/>
     <br/>
     <h1>Property List</h1>
     <table class="table table-hover">
@@ -147,16 +151,18 @@ if (!empty($_GET['edit'])) {
             $output = "";
             while ($row = mysqli_fetch_assoc($result)) {
 
+                $actual_link = "http://$_SERVER[HTTP_HOST]/";
+
                 if (filter_var($row['image_full'], FILTER_VALIDATE_URL)) {
                     $imageURL = "<a href='" . $row['image_full'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Image</button></a>";
                 } else {
-                    $imageURL = "<a href='uploads/" . $row['image_full'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Image</button></a>";
+                    $imageURL = "<a href='" . $actual_link . "uploads/" . $row['image_full'] . "' target='_blank'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Image</button></a>";
                 }
 
                 if (filter_var($row['image_thumbnail'], FILTER_VALIDATE_URL)) {
                     $thumbnailImageURL = "<a href='" . $row['image_thumbnail'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Thumbnail</button></a>";
                 } else {
-                    $thumbnailImageURL = "<a href='uploads/thumbs/" . $row['image_thumbnail'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Thumbnail</button></a>";
+                    $thumbnailImageURL = "<a href='" . $actual_link . "uploads/thumbs/" . $row['image_thumbnail'] . "' target='_blank'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Thumbnail</button></a>";
                 }
 
                 $output .=
@@ -173,7 +179,7 @@ if (!empty($_GET['edit'])) {
                         <td>" . $row['price'] . "</td>
                         <td>" . $row['property_type_id'] . "</td>
                         <td>" . $row['type'] . "</td>
-                        <td style='white-space: nowrap;'><a href='index.php?edit=" . $row['id'] . "' class='btn btn-primary'>Edit</a> <a href='index.php?delete=" . $row['id'] . "' class='btn btn-danger'>Delete</a></td>
+                        <td style='white-space: nowrap;'><a href='$actual_link?edit=" . $row['id'] . "' class='btn btn-primary'>Edit</a> <a href='index.php?delete=" . $row['id'] . "' class='btn btn-danger'>Delete</a></td>
                     </tr>";
             }
             echo $output;

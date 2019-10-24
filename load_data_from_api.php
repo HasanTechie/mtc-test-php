@@ -44,6 +44,8 @@ for ($i = 1; $i <= 10; $i++) { //Looping through all pages of api
         or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
     }
     if (mysqli_affected_rows($connection) > 0) {
-        echo "Successfully added page: $i" . "<br>";
+        $_SESSION['message'] = '10000 property records has been loaded from API to database';
+        $_SESSION['message_type'] = 'success';
+        header('location: index.php');
     }
 }
