@@ -7,9 +7,9 @@ spl_autoload_register(function ($className) {
     require_once 'includes/' . $className . '.php';
 });
 
+$property = new Property();
 
 if (isset($_POST['submit'])) {
-    $property = New Property();
     if ($_POST['action'] == 'add') {
         $property->store($_POST);
     }
@@ -18,7 +18,7 @@ if (isset($_POST['submit'])) {
     }
 }
 if (!empty($_GET['delete'])) {
-    deleteProperty();
+    $property->destroy($_GET['delete']);
 }
 
 if (!empty($_GET['edit'])) {
@@ -37,6 +37,25 @@ if (!empty($_GET['edit'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="/">Trial Task 2019</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Add Property <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a href="load_data_from_api.php" class="nav-link" onclick="return confirm('Are you sure?')"> Reload data from API
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 <div class="container">
     <?php if (isset($_SESSION['message'])) { ?>
         <br/>
@@ -50,38 +69,55 @@ if (!empty($_GET['edit'])) {
         unset($_SESSION['message']);
     } ?>
     <form action="" method="POST" enctype="multipart/form-data">
-        <h1>Add/Edit Property</h1>
+        <h1 class="display-3"><?php echo(!empty($row) ? 'Edit' : 'Add') ?> Property</h1>
+        <hr class="my-4">
         <fieldset>
             <div class="form-group w-25">
                 <label>County</label>
                 <input type="text" name="county" class="form-control" placeholder="Enter county"
-                       value="<?php echo(!empty($row['county']) ? $row['county'] : null); ?>" required>
+                       value="<?php echo(!empty($row['county']) ? $row['county'] : null); ?>">
             </div>
             <div class="form-group w-25">
                 <label>Country</label>
                 <input type="text" name="country" class="form-control" placeholder="Enter country"
-                       value="<?php echo(!empty($row['country']) ? $row['country'] : null); ?>" required>
+                       value="<?php echo(!empty($row['country']) ? $row['country'] : null); ?>">
             </div>
             <div class="form-group w-25">
                 <label>Town</label>
                 <input type="text" name="town" class="form-control" placeholder="Enter Town"
-                       value="<?php echo(!empty($row['town']) ? $row['town'] : null); ?>" required>
+                       value="<?php echo(!empty($row['town']) ? $row['town'] : null); ?>">
             </div>
             <div class="form-group w-50">
                 <label for="description">Description</label>
                 <textarea class="form-control" name="description" rows="3"
-                          placeholder="Enter Description"
-                          required><?php echo(!empty($row['description']) ? $row['description'] : null); ?></textarea>
+                          placeholder="Enter Description"><?php echo(!empty($row['description']) ? $row['description'] : null); ?></textarea>
             </div>
             <div class="form-group w-50">
                 <label>Address</label>
                 <input type="text" name="address" class="form-control" placeholder="Enter Address"
-                       value="<?php echo(!empty($row['address']) ? $row['address'] : null); ?>" required>
+                       value="<?php echo(!empty($row['address']) ? $row['address'] : null); ?>">
             </div>
             <div class="form-group">
+
                 <label for="exampleInputFile">Image File</label>
+                <?php
+                if (!empty($row['image_full'])) {
+
+                    $actual_link = "http://$_SERVER[HTTP_HOST]/";
+
+                    if (filter_var($row['image_full'], FILTER_VALIDATE_URL)) {
+                        $imageURL = "<a href='" . $row['image_full'] . "'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Image</button></a>";
+                    } else {
+                        $imageURL = "<a href='" . $actual_link . "uploads/" . $row['image_full'] . "' target='_blank'><button style=\"white-space: nowrap;\" class='btn btn-primary'>View Image</button></a>";
+                    }
+
+                    echo '<span>' . $imageURL . '</span><br/><br/>';
+                }
+                ?>
+
+
                 <input type="file" class="form-control-file" name="image" id="image_full"
-                       aria-describedby="fileHelp" required>
+                       aria-describedby="fileHelp">
                 <small id="fileHelp" class="form-text text-muted">Image will be converted to thumbnail.</small>
             </div>
             <div class="form-group w-25">
@@ -96,7 +132,7 @@ if (!empty($_GET['edit'])) {
             <div class="form-group w-25">
                 <label>price</label>
                 <input type="number" name="price" class="form-control" placeholder="Enter price"
-                       value="<?php echo(!empty($row['price']) ? $row['price'] : null); ?>" required>
+                       value="<?php echo(!empty($row['price']) ? $row['price'] : null); ?>">
             </div>
             <div class="form-group w-25">
                 <label for="property_type_id">Property type</label>
@@ -121,20 +157,12 @@ if (!empty($_GET['edit'])) {
             <br/>
             <div class="form-group">
                 <button type="submit" class="btn btn-success"
-                        name="submit"><?php echo(!empty($row) ? 'Update Property' : 'Add Property') ?></button>
-                <button type="reset" id="reset" class="btn btn-primary">Reset Form</button>
+                        name="submit"><?php echo(!empty($row) ? 'Update' : 'Add') ?> Property
+                </button>
             </div>
         </fieldset>
     </form>
 
-    <script>
-        $("#reset").click(function () {
-            window.location = window.location.href.split("?")[0];
-        });
-    </script>
-    <a href="load_data_from_api.php" onclick="return confirm('Are you sure?')">
-        <button class="btn btn-secondary">Reload data from API</button>
-    </a>
     <br/>
     <br/>
     <h1>Property List</h1>
@@ -159,12 +187,7 @@ if (!empty($_GET['edit'])) {
         <tbody>
         <?php
 
-        $properties = new Property();
-        $rows = $properties->select();
-        //        $querys = "SELECT * FROM properties ORDER BY id DESC;";
-
-        //        $result = mysqli_query($connection, $query)
-        //        or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
+        $rows = $property->select();
         if (count($rows)) {
             $output = "";
             foreach ($rows as $row) {

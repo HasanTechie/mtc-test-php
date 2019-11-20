@@ -22,34 +22,40 @@ class Property extends DB
 
     public function store($fields)
     {
-        $fields['uuid'] = uniqid(mt_rand(), true);
 
-        $fileName = $fields['uuid'] . '_' . $_FILES["image"]['name'];
-        $this->uploadFile($fileName);
+        $fields = $this->validate($fields);
 
-        $fields['image_full'] = $fileName;
-        $fields['image_thumbnail'] = 'thumb_' . $fileName;
-        $fields['created_at'] = $fields['updated_at'] = date('Y-m-d H:i:s');
+        if ($fields) {
 
-        unset($fields['submit'], $fields['action'], $fields['id']);
+            $fields['uuid'] = uniqid(mt_rand(), true);
 
-        $implodeColumns = implode(', ', array_keys($fields));
-        $implodeValues = implode(', :', array_keys($fields));
+            $fileName = $fields['uuid'] . '_' . $_FILES["image"]['name'];
+            $this->uploadFile($fileName);
 
+            $fields['image_full'] = $fileName;
+            $fields['image_thumbnail'] = 'thumb_' . $fileName;
+            $fields['created_at'] = $fields['updated_at'] = date('Y-m-d H:i:s');
 
-        $query = "INSERT INTO properties ($implodeColumns) VALUES (:" . $implodeValues . ")";
+            $implodeColumns = implode(', ', array_keys($fields));
+            $implodeValues = implode(', :', array_keys($fields));
 
-        $stmt = $this->connect()->prepare($query);
+            $query = "INSERT INTO properties ($implodeColumns) VALUES (:" . $implodeValues . ")";
 
-        foreach ($fields as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
-        }
+            $stmt = $this->connect()->prepare($query);
 
-        $stmtExec = $stmt->execute();
+            foreach ($fields as $key => $value) {
+                $stmt->bindValue(':' . $key, $value);
+            }
 
-        if ($stmtExec) {
-            $_SESSION['message'] = 'Property has been added';
-            $_SESSION['message_type'] = 'success';
+            $stmtExec = $stmt->execute();
+
+            if ($stmtExec) {
+                $_SESSION['message'] = 'Property has been added';
+                $_SESSION['message_type'] = 'success';
+            }
+        } else {
+            $_SESSION['message'] = 'Following fields cannot be empty: ' . $_SESSION['message'];
+            $_SESSION['message_type'] = 'danger';
         }
     }
 
@@ -76,55 +82,72 @@ class Property extends DB
 
         $query = "";
         $i = 1;
-
         $id = $fields['id'];
-        unset($fields['submit'], $fields['action'], $fields['id']);
 
+        $fields = $this->validate($fields);
 
-        if (!empty($_FILES["image"]['name'])) {
-            $fileName = uniqid() . '_' . $_FILES["image"]['name'];
-            $this->uploadFile($fileName);
-        }
-
-        if (!empty($fileName)) {
-            $fields['image_full'] = $fileName;
-            $fields['image_thumbnail'] = 'thumb_' . $fileName;
-        }
-        $fields['created_at'] = $fields['updated_at'] = date('Y-m-d H:i:s');
-
-        $totalFields = count($fields);
-
-        foreach ($fields as $key => $value) {
-            if ($i == $totalFields) {
-                $setQuery = "$key = :" . $key;
-                $query = $query . $setQuery;
-            } else {
-                $setQuery = "$key = :" . $key . ", ";
-                $query = $query . $setQuery;
-                $i++;
+        if ($fields) {
+            if (!empty($_FILES["image"]['name'])) {
+                $fileName = uniqid() . '_' . $_FILES["image"]['name'];
+                $this->uploadFile($fileName);
             }
-        }
+
+            if (!empty($fileName)) {
+                $fields['image_full'] = $fileName;
+                $fields['image_thumbnail'] = 'thumb_' . $fileName;
+            }
+            $fields['created_at'] = $fields['updated_at'] = date('Y-m-d H:i:s');
+
+            $totalFields = count($fields);
+
+            foreach ($fields as $key => $value) {
+                if ($i == $totalFields) {
+                    $setQuery = "$key = :" . $key;
+                    $query = $query . $setQuery;
+                } else {
+                    $setQuery = "$key = :" . $key . ", ";
+                    $query = $query . $setQuery;
+                    $i++;
+                }
+            }
 
 
-        $query = "UPDATE properties SET " . $query;
-        $query .= " WHERE id = " . $id;
+            $query = "UPDATE properties SET " . $query;
+            $query .= " WHERE id = " . $id;
 
-        $stmt = $this->connect()->prepare($query);
+            $stmt = $this->connect()->prepare($query);
 
-        foreach ($fields as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
-        }
-        $stmtExec = $stmt->execute();
+            foreach ($fields as $key => $value) {
+                $stmt->bindValue(':' . $key, $value);
+            }
+            $stmtExec = $stmt->execute();
 
-        if ($stmtExec) {
-            $_SESSION['message'] = 'Property record has been updated';
-            $_SESSION['message_type'] = 'success';
+            if ($stmtExec) {
+                $_SESSION['message'] = 'Property record has been updated';
+                $_SESSION['message_type'] = 'success';
+            }
+        } else {
+            $_SESSION['message'] = 'Following fields cannot be empty: ' . $_SESSION['message'];
+            $_SESSION['message_type'] = 'danger';
         }
     }
 
-
-    protected function uploadFile($fileName) //upload image and thumbnail
+    public function destroy($id)
     {
+        $query = "DELETE FROM properties WHERE id = :id";
+        $stmt = $this->connect()->prepare($query);
+        $stmt->bindValue(":id", $id);
+        $stmtExec = $stmt->execute();
+        if ($stmtExec) {
+            $_SESSION['message'] = 'Property record has been deleted';
+            $_SESSION['message_type'] = 'danger';
+        }
+
+    }
+
+
+    protected function uploadFile($fileName)
+    {//upload image and thumbnail
         $fileExtArr = explode('.', $fileName);//make array of file.name.ext as    array(file,name,ext)
         $fileExt = strtolower(end($fileExtArr));//get last item of array of user file input
         $fileSize = $_FILES["image"]['size'];
@@ -158,8 +181,8 @@ class Property extends DB
         }
     }
 
-    protected function createThumb($target, $ext, $thumb_path, $w, $h) //create thumbnail
-    {
+    protected function createThumb($target, $ext, $thumb_path, $w, $h)
+    { //create thumbnail
         list($w_orig, $h_orig) = getimagesize($target);
         $scale_ratio = $w_orig / $h_orig;
         if (($w / $h) > $scale_ratio)
@@ -183,5 +206,30 @@ class Property extends DB
         imagecopyresampled($tci, $img, 0, 0, 0, 0, $w, $h, $w_orig, $h_orig);
         imagejpeg($tci, $thumb_path, 80);
         imagedestroy($tci);
+    }
+
+    protected function validate($fields)
+    {
+        $errors = 0;
+
+        $_SESSION['message'] = "<ul>";
+        if (empty($_FILES["image"]['name']) && $fields['action'] != 'edit') {
+            $_SESSION['message'] .= "<li>Image Field</li>";
+            $errors = 1;
+        }
+        unset($fields['submit'], $fields['action'], $fields['id']);
+
+        foreach ($fields as $key => $field) {
+            if (empty($field)) {
+                $key = str_replace('_', ' ', $key);
+                $_SESSION['message'] .= "<li>" . ucfirst($key) . "</li>";
+                $errors = 1;
+            }
+        }
+        $_SESSION['message'] .= "</ul>";
+
+        if ($errors == 0) {
+            return $fields;
+        }
     }
 }
