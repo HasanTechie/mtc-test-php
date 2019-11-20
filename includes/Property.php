@@ -53,6 +53,75 @@ class Property extends DB
         }
     }
 
+    public function edit($id)
+    {
+        $query = "SELECT * FROM properties WHERE id = :id";
+
+        $stmt = $this->connect()->prepare($query);
+        $stmt->bindValue(":id", $id);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $dataArrayE1 = [];
+            foreach ($result as $key => $value) {
+                $dataArrayE1[$key] = antiXSS($value);  //to preventing Cross-site scripting (XSS)
+            }
+            return $dataArrayE1;
+        }
+    }
+
+    public function update($fields)
+    {
+
+        $query = "";
+        $i = 1;
+
+        $id = $fields['id'];
+        unset($fields['submit'], $fields['action'], $fields['id']);
+
+
+        if (!empty($_FILES["image"]['name'])) {
+            $fileName = uniqid() . '_' . $_FILES["image"]['name'];
+            $this->uploadFile($fileName);
+        }
+
+        if (!empty($fileName)) {
+            $fields['image_full'] = $fileName;
+            $fields['image_thumbnail'] = 'thumb_' . $fileName;
+        }
+        $fields['created_at'] = $fields['updated_at'] = date('Y-m-d H:i:s');
+
+        $totalFields = count($fields);
+
+        foreach ($fields as $key => $value) {
+            if ($i == $totalFields) {
+                $setQuery = "$key = :" . $key;
+                $query = $query . $setQuery;
+            } else {
+                $setQuery = "$key = :" . $key . ", ";
+                $query = $query . $setQuery;
+                $i++;
+            }
+        }
+
+
+        $query = "UPDATE properties SET " . $query;
+        $query .= " WHERE id = " . $id;
+
+        $stmt = $this->connect()->prepare($query);
+
+        foreach ($fields as $key => $value) {
+            $stmt->bindValue(':' . $key, $value);
+        }
+        $stmtExec = $stmt->execute();
+
+        if ($stmtExec) {
+            $_SESSION['message'] = 'Property record has been updated';
+            $_SESSION['message_type'] = 'success';
+        }
+    }
+
 
     protected function uploadFile($fileName) //upload image and thumbnail
     {

@@ -9,12 +9,12 @@ spl_autoload_register(function ($className) {
 
 
 if (isset($_POST['submit'])) {
+    $property = New Property();
     if ($_POST['action'] == 'add') {
-        $property = New Property();
         $property->store($_POST);
     }
     if ($_POST['action'] == 'edit') {
-        editProperty();
+        $property->update($_POST);
     }
 }
 if (!empty($_GET['delete'])) {
@@ -22,18 +22,9 @@ if (!empty($_GET['delete'])) {
 }
 
 if (!empty($_GET['edit'])) {
-    $row = displayEditProperty();
+    $property = New Property();
+    $row = $property->edit($_GET['edit']);
 }
-
-/*try {
-    $db = new DB();
-    $conn = $db->connect();
-    if ($conn) {
-        echo 'connected';
-    }
-} catch (PDOException $ex) {
-    echo $ex->getMessage();
-}*/
 
 ?>
 <!DOCTYPE html>

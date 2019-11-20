@@ -54,7 +54,7 @@ function truncate($string, $length, $dots = "...")
     }
 }*/
 
-function displayEditProperty() //display edit property form values
+/*function displayEditProperty() //display edit property form values
 {
     global $connection;
 
@@ -70,9 +70,9 @@ function displayEditProperty() //display edit property form values
         }
         return $dE1;
     }
-}
+}*/
 
-function editProperty() //updated selected property
+/*function editProperty() //updated selected property
 {
     global $connection;
 
@@ -115,7 +115,7 @@ function editProperty() //updated selected property
         $_SESSION['message'] = 'Property record has been updated';
         $_SESSION['message_type'] = 'success';
     }
-}
+}*/
 
 function deleteProperty() //delete selected property
 {
@@ -145,7 +145,7 @@ function generateSelect($name = '', $options = array(), $default = 1) //preselec
     return $html;
 }
 
-function uploadFile($fileName) //upload image and thumbnail
+/*function uploadFile($fileName) //upload image and thumbnail
 {
     $fileExtArr = explode('.', $fileName);//make array of file.name.ext as    array(file,name,ext)
     $fileExt = strtolower(end($fileExtArr));//get last item of array of user file input
@@ -205,4 +205,4 @@ function createThumb($target, $ext, $thumb_path, $w, $h) //create thumbnail
     imagecopyresampled($tci, $img, 0, 0, 0, 0, $w, $h, $w_orig, $h_orig);
     imagejpeg($tci, $thumb_path, 80);
     imagedestroy($tci);
-}
+}*/
