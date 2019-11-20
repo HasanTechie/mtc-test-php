@@ -1,9 +1,7 @@
 <?php
 class DB
 {
-
     protected $conn = null;
-
 
     public function Connect()
     {

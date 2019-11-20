@@ -1,15 +1,18 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
-require 'basic.php';
+require 'includes/db.php';
 require 'functions.php';
 
 use GuzzleHttp\Client;
 
-mysqli_query($connection, 'TRUNCATE TABLE properties'); //Truncate table before loading new data
+//mysqli_query($connection, 'TRUNCATE TABLE properties'); //Truncate table before loading new data
 
 $client = new Client();
 
 $apiKey = getenv('API_KEY');
+
+var_dump($apiKey);
+die();
 
 for ($i = 1; $i <= 10; $i++) { //Looping through all pages of api
     $res = $client->request('GET', "http://trialapi.craig.mtcdevserver.com/api/properties?page[number]=$i&page[size]=100&api_key=$apiKey"); //doing request to server API via Guzzle Client

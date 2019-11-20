@@ -62,7 +62,7 @@ function displayEditProperty() //display edit property form values
     $result = mysqli_query($connection, $query)
     or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
 
-    if (count($result)) {
+    if ($result) {
         $row = mysqli_fetch_assoc($result);
         $dE1 = [];
         foreach ($row as $key => $value) {

@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
-require 'basic.php';
+require 'includes/basic.php';
 require 'functions.php';
 
 if (isset($_POST['submit'])) {
@@ -18,6 +18,19 @@ if (!empty($_GET['delete'])) {
 if (!empty($_GET['edit'])) {
     $row = displayEditProperty();
 }
+
+try {
+
+    $db = new DB();
+    $conn = $db->Connect();
+    if ($conn) {
+        echo 'connected';
+    }
+} catch (PDOException $ex) {
+    echo $ex->getMessage();
+}
+
+echo 'Current PHP version: ' . phpversion();
 
 ?>
 <!DOCTYPE html>
@@ -63,7 +76,8 @@ if (!empty($_GET['edit'])) {
             <div class="form-group w-50">
                 <label for="description">Description</label>
                 <textarea class="form-control" name="description" rows="3"
-                          placeholder="Enter Description" required><?php echo(!empty($row['description']) ? $row['description'] : null); ?></textarea>
+                          placeholder="Enter Description"
+                          required><?php echo(!empty($row['description']) ? $row['description'] : null); ?></textarea>
             </div>
             <div class="form-group w-50">
                 <label>Address</label>
