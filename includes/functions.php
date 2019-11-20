@@ -15,7 +15,7 @@ function truncate($string, $length, $dots = "...")
     return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
 }
 
-function addProperty() //add property to database
+/*function addProperty() //add property to database
 {
 
     global $connection;
@@ -28,22 +28,22 @@ function addProperty() //add property to database
     $fileName = uniqid() . '_' . $_FILES["image"]['name'];
     uploadFile($fileName);
 
-    $query = "INSERT INTO properties(uuid, county, country, town, description, address, image_full, image_thumbnail, num_bedrooms, num_bathrooms, price, property_type_id, type, created_at, updated_at)
+    $query = "INSERT INTO properties( county, country, town, description, address, num_bedrooms, num_bathrooms, price, property_type_id, type)
                 VALUES (";
 
-    $query .= "'" . uniqid(mt_rand(), true) . "','" .
+    $query .= "'" .
         $dA1['county'] . "','" .
         $dA1['country'] . "','" .
         $dA1['town'] . "','" .
         $dA1['description'] . "',' " .
-        $dA1['address'] . " ','" .
-        $fileName . "','thumb_" .
-        $fileName . "'," .
+        $dA1['address'] . " '," .
+//        $fileName . "','thumb_" .
+//        $fileName . "'," .
         $dA1['num_bedrooms'] . "," .
         $dA1['num_bathrooms'] . "," .
         $dA1['price'] . "," .
         $dA1['property_type_id'] . ",'" .
-        $dA1['type'] . "',now(),now());";
+        $dA1['type'] . "');";
 
     $result = mysqli_query($connection, $query)
     or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
@@ -52,7 +52,7 @@ function addProperty() //add property to database
         $_SESSION['message'] = 'Property has been added';
         $_SESSION['message_type'] = 'success';
     }
-}
+}*/
 
 function displayEditProperty() //display edit property form values
 {

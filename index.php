@@ -7,9 +7,11 @@ spl_autoload_register(function ($className) {
     require_once 'includes/' . $className . '.php';
 });
 
+
 if (isset($_POST['submit'])) {
     if ($_POST['action'] == 'add') {
-        addProperty();
+        $property = New Property();
+        $property->store($_POST);
     }
     if ($_POST['action'] == 'edit') {
         editProperty();

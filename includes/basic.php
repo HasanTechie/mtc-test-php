@@ -12,8 +12,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!file_exists('uploads')) {
-    mkdir('uploads', 0777, true);
+if (!is_dir('uploads')) {
+    mkdir('uploads/', 0777, true);
     mkdir('uploads/thumbs', 0777, true);
 }
 

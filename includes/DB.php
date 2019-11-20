@@ -24,7 +24,7 @@ class DB
         }
     }
 
-    public function Close()
+    public function close()
     {
         $this->conn = null;
     }
