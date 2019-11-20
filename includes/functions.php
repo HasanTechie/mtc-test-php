@@ -15,6 +15,20 @@ function truncate($string, $length, $dots = "...")
     return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
 }
 
+function generateSelect($name = '', $options = array(), $default = 1) //preselect the selected option from database
+{
+    $html = '<select class="form-control" name="' . $name . '">';
+    foreach ($options as $option => $value) {
+        if ($option == $default) {
+            $html .= '<option value=' . $value . ' selected="selected">' . $option . '</option>';
+        } else {
+            $html .= '<option value=' . $value . '>' . $option . '</option>';
+        }
+    }
+    $html .= '</select>';
+    return $html;
+}
+
 /*function addProperty() //add property to database
 {
 
@@ -117,7 +131,7 @@ function truncate($string, $length, $dots = "...")
     }
 }*/
 
-function deleteProperty() //delete selected property
+/*function deleteProperty() //delete selected property
 {
     global $connection;
 
@@ -129,21 +143,7 @@ function deleteProperty() //delete selected property
         $_SESSION['message'] = 'Property record has been deleted';
         $_SESSION['message_type'] = 'danger';
     }
-}
-
-function generateSelect($name = '', $options = array(), $default = 1) //preselect the selected option from database
-{
-    $html = '<select class="form-control" name="' . $name . '">';
-    foreach ($options as $option => $value) {
-        if ($option == $default) {
-            $html .= '<option value=' . $value . ' selected="selected">' . $option . '</option>';
-        } else {
-            $html .= '<option value=' . $value . '>' . $option . '</option>';
-        }
-    }
-    $html .= '</select>';
-    return $html;
-}
+}*/
 
 /*function uploadFile($fileName) //upload image and thumbnail
 {

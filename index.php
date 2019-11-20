@@ -1,7 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 require 'includes/basic.php';
-require 'includes/functions.php';
 
 spl_autoload_register(function ($className) {
     require_once 'includes/' . $className . '.php';
@@ -20,9 +19,7 @@ if (isset($_POST['submit'])) {
 if (!empty($_GET['delete'])) {
     $property->destroy($_GET['delete']);
 }
-
 if (!empty($_GET['edit'])) {
-    $property = New Property();
     $row = $property->edit($_GET['edit']);
 }
 
@@ -38,7 +35,7 @@ if (!empty($_GET['edit'])) {
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="/">Trial Task 2019</a>
+    <a class="navbar-brand" href="/">MTC Media Trial Task 2019</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
             aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

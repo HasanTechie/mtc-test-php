@@ -17,4 +17,6 @@ if (!is_dir('uploads')) {
     mkdir('uploads/thumbs', 0777, true);
 }
 
+require 'functions.php';
+
 ?>

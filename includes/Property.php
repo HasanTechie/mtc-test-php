@@ -23,39 +23,42 @@ class Property extends DB
     public function store($fields)
     {
 
-        $fields = $this->validate($fields);
+        if (isset($fields['action'])) { //If data request is from form
 
-        if ($fields) {
+            $fields = $this->validate($fields);
 
-            $fields['uuid'] = uniqid(mt_rand(), true);
+            if ($fields) {
 
-            $fileName = $fields['uuid'] . '_' . $_FILES["image"]['name'];
-            $this->uploadFile($fileName);
+                $fields['uuid'] = uniqid(mt_rand(), true);
 
-            $fields['image_full'] = $fileName;
-            $fields['image_thumbnail'] = 'thumb_' . $fileName;
-            $fields['created_at'] = $fields['updated_at'] = date('Y-m-d H:i:s');
+                $fileName = $fields['uuid'] . '_' . $_FILES["image"]['name'];
+                $this->uploadFile($fileName);
 
-            $implodeColumns = implode(', ', array_keys($fields));
-            $implodeValues = implode(', :', array_keys($fields));
+                $fields['image_full'] = $fileName;
+                $fields['image_thumbnail'] = 'thumb_' . $fileName;
+                $fields['created_at'] = $fields['updated_at'] = date('Y-m-d H:i:s');
 
-            $query = "INSERT INTO properties ($implodeColumns) VALUES (:" . $implodeValues . ")";
+                $stmtExec = $this->insertStatement($fields);
 
-            $stmt = $this->connect()->prepare($query);
-
-            foreach ($fields as $key => $value) {
-                $stmt->bindValue(':' . $key, $value);
+                if ($stmtExec) {
+                    $_SESSION['message'] = 'Property has been added';
+                    $_SESSION['message_type'] = 'success';
+                }
+            } else {
+                $_SESSION['message'] = 'Following fields cannot be empty: ' . $_SESSION['message'];
+                $_SESSION['message_type'] = 'danger';
             }
 
-            $stmtExec = $stmt->execute();
+        } else { //If data request is from API
+
+            $stmtExec = $this->insertStatement($fields);
 
             if ($stmtExec) {
-                $_SESSION['message'] = 'Property has been added';
+                $_SESSION['message'] = 'Properties has been added';
                 $_SESSION['message_type'] = 'success';
+                header('Location: index.php');
             }
-        } else {
-            $_SESSION['message'] = 'Following fields cannot be empty: ' . $_SESSION['message'];
-            $_SESSION['message_type'] = 'danger';
+
         }
     }
 
@@ -145,6 +148,24 @@ class Property extends DB
 
     }
 
+    protected function insertStatement($fields)
+    {
+        $implodeColumns = implode(', ', array_keys($fields));
+        $implodeValues = implode(', :', array_keys($fields));
+
+        $query = "INSERT INTO properties ($implodeColumns) VALUES (:" . $implodeValues . ")";
+
+        $stmt = $this->connect()->prepare($query);
+
+        foreach ($fields as $key => $value) {
+            $stmt->bindValue(':' . $key, $value);
+        }
+
+        $stmtExec = $stmt->execute();
+
+        return $stmtExec;
+    }
+
 
     protected function uploadFile($fileName)
     {//upload image and thumbnail
@@ -211,6 +232,7 @@ class Property extends DB
     protected function validate($fields)
     {
         $errors = 0;
+
 
         $_SESSION['message'] = "<ul>";
         if (empty($_FILES["image"]['name']) && $fields['action'] != 'edit') {
