@@ -1,7 +1,11 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 require 'includes/basic.php';
-require 'functions.php';
+require 'includes/functions.php';
+
+spl_autoload_register(function ($className) {
+    require_once 'includes/' . $className . '.php';
+});
 
 if (isset($_POST['submit'])) {
     if ($_POST['action'] == 'add') {
@@ -19,18 +23,15 @@ if (!empty($_GET['edit'])) {
     $row = displayEditProperty();
 }
 
-try {
-
+/*try {
     $db = new DB();
-    $conn = $db->Connect();
+    $conn = $db->connect();
     if ($conn) {
         echo 'connected';
     }
 } catch (PDOException $ex) {
     echo $ex->getMessage();
-}
-
-echo 'Current PHP version: ' . phpversion();
+}*/
 
 ?>
 <!DOCTYPE html>
@@ -126,11 +127,18 @@ echo 'Current PHP version: ' . phpversion();
             <input type="hidden" name="id" value="<?php echo(!empty($row['id']) ? $row['id'] : null); ?>">
             <br/>
             <div class="form-group">
-                <button type="submit" class="btn btn-<?php echo(!empty($row) ? 'primary' : 'success') ?>"
+                <button type="submit" class="btn btn-success"
                         name="submit"><?php echo(!empty($row) ? 'Update Property' : 'Add Property') ?></button>
+                <button type="reset" id="reset" class="btn btn-primary">Reset Form</button>
             </div>
         </fieldset>
     </form>
+
+    <script>
+        $("#reset").click(function () {
+            window.location = window.location.href.split("?")[0];
+        });
+    </script>
     <a href="load_data_from_api.php" onclick="return confirm('Are you sure?')">
         <button class="btn btn-secondary">Reload data from API</button>
     </a>
@@ -157,13 +165,16 @@ echo 'Current PHP version: ' . phpversion();
         </thead>
         <tbody>
         <?php
-        $query = "SELECT * FROM properties ORDER BY id DESC;";
 
-        $result = mysqli_query($connection, $query)
-        or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
-        if (mysqli_num_rows($result) >= 0) {
+        $properties = new Property();
+        $rows = $properties->select();
+        //        $querys = "SELECT * FROM properties ORDER BY id DESC;";
+
+        //        $result = mysqli_query($connection, $query)
+        //        or die("Error at query " . $query . '-- ' . mysqli_errno($connection));
+        if (count($rows)) {
             $output = "";
-            while ($row = mysqli_fetch_assoc($result)) {
+            foreach ($rows as $row) {
 
                 $actual_link = "http://$_SERVER[HTTP_HOST]/";
 

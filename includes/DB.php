@@ -1,17 +1,18 @@
 <?php
+
 class DB
 {
     protected $conn = null;
 
-    public function Connect()
+    public function connect()
     {
         try {
 
-            $dsn = "mysql:dbname=".getenv('DB_DATABASE')."; host=".getenv('DB_HOST')."";
+            $dsn = "mysql:dbname=" . getenv('DB_DATABASE') . "; host=" . getenv('DB_HOST') . "";
             $user = getenv('DB_USERNAME');
             $password = getenv('DB_PASSWORD');
 
-            $options  = array(PDO::ATTR_ERRMODE =>      PDO::ERRMODE_EXCEPTION,
+            $options = array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             );
 
