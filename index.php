@@ -2,10 +2,6 @@
 require __DIR__ . '/vendor/autoload.php';
 require 'includes/basic.php';
 
-spl_autoload_register(function ($className) {
-    require_once 'includes/' . $className . '.php';
-});
-
 $property = new Property();
 
 if (isset($_POST['submit'])) {
@@ -24,9 +20,7 @@ if (!empty($_GET['edit'])) {
 }
 
 require 'layouts/header.php';
-
 require 'layouts/content.php';
-
 require 'layouts/footer.php';
 ?>
 

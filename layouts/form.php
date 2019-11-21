@@ -1,4 +1,4 @@
-<form action="" method="POST" enctype="multipart/form-data">
+<form action="index.php" method="POST" enctype="multipart/form-data">
     <h1 class="display-3"><?php echo(!empty($row) ? 'Edit' : 'Add') ?> Property</h1>
     <hr class="my-4">
     <fieldset>

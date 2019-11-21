@@ -6,7 +6,9 @@ if (is_array($rows)) {
         ?>
         <nav aria-label="Page navigation example">
             <ul class="pagination float-right">
-                <?php $property->pageLinks(); ?>
+                <?php if (count($rows) > 120) {
+                    $property->pageLinks();
+                } ?>
             </ul>
         </nav>
         <h1>Property List</h1>
