@@ -2,9 +2,14 @@
 
 class Property extends DB
 {
-    public function select()
+
+    protected $recordsPerPage = 100;
+
+    public function index()
     {
-        $query = "SELECT * FROM properties ORDER BY id DESC;";
+        $query = "SELECT * FROM properties ORDER BY id DESC ";
+
+        $query = $this->paging($query, $this->recordsPerPage);
 
         $result = $this->connect()->query($query);
 
@@ -38,7 +43,7 @@ class Property extends DB
                 $fields['image_thumbnail'] = 'thumb_' . $fileName;
                 $fields['created_at'] = $fields['updated_at'] = date('Y-m-d H:i:s');
 
-                $stmtExec = $this->insertStatement($fields);
+                $stmtExec = $this->insertStatement($fields, 'properties');
 
                 if ($stmtExec) {
                     $_SESSION['message'] = 'Property has been added';
@@ -51,12 +56,15 @@ class Property extends DB
 
         } else { //If data request is from API
 
-            $stmtExec = $this->insertStatement($fields);
+            $propertyTypeArray = json_decode(json_encode($fields['property_type']), true);
+            $this->insertStatement($propertyTypeArray, 'property_type');
+
+            unset($fields['property_type']);
+            $stmtExec = $this->insertStatement($fields, 'properties');
 
             if ($stmtExec) {
                 $_SESSION['message'] = 'Properties has been added';
                 $_SESSION['message_type'] = 'success';
-                header('Location: index.php');
             }
 
         }
@@ -114,7 +122,6 @@ class Property extends DB
                 }
             }
 
-
             $query = "UPDATE properties SET " . $query;
             $query .= " WHERE id = " . $id;
 
@@ -148,12 +155,12 @@ class Property extends DB
 
     }
 
-    protected function insertStatement($fields)
+    protected function insertStatement($fields, $table)
     {
         $implodeColumns = implode(', ', array_keys($fields));
         $implodeValues = implode(', :', array_keys($fields));
 
-        $query = "INSERT INTO properties ($implodeColumns) VALUES (:" . $implodeValues . ")";
+        $query = "INSERT IGNORE INTO $table ($implodeColumns) VALUES (:" . $implodeValues . ")";
 
         $stmt = $this->connect()->prepare($query);
 
@@ -252,6 +259,61 @@ class Property extends DB
 
         if ($errors == 0) {
             return $fields;
+        }
+    }
+
+    public function paging($query, $recordPerPage)
+    {
+        $startingPosition = 0;
+        if (isset($_GET['page_no'])) {
+            $startingPosition = ($_GET['page_no'] - 1) * $recordPerPage;
+        }
+        $query = $query . " limit $startingPosition,$recordPerPage ; ";
+        return $query;
+    }
+
+    public function pageLink($query = "SELECT * FROM properties ORDER BY id DESC ")
+    {
+        $self = $_SERVER['PHP_SELF'];
+
+        $stmt = $this->connect()->prepare($query);
+        $stmt->execute();
+
+        $totalRecords = $stmt->rowCount();
+
+        $output = "";
+
+        if ($totalRecords > 0) {
+
+            $output .= '<ul class="pagination">';
+
+            $totalPages = ceil($totalRecords / $this->recordsPerPage);
+            $currentPage = 1;
+            if (isset($_GET["page_no"])) {
+                $currentPage = $_GET["page_no"];
+            }
+            if ($currentPage != 1) {
+                $previous = $currentPage - 1;
+                $output .= "<li class=\"page-item\"><a class=\"page-link\" href='" . $self . "?page_no=1'>First</a></li>";
+                $output .= "<li class=\"page-item\"><a class=\"page-link\" href='" . $self . "?page_no=" . $previous . "'>Previous</a></li>";
+            }
+
+            for ($i = 1; $i <= $totalPages; $i++) {
+                if ($i == $currentPage) {
+                    $output .= "<li  class=\"page-item\"><a class=\"page-link\" href='" . $self . "?page_no=" . $i . "' style='color:red;'>" . $i . "</a></li>";
+                } else {
+                    $output .= "<li  class=\"page-item\"><a class=\"page-link\" href='" . $self . "?page_no=" . $i . "'>" . $i . "</a></li>";
+                }
+            }
+
+            if ($currentPage != $totalPages) {
+                $next = $currentPage + 1;
+                $output .= "<li  class=\"page-item\"><a class=\"page-link\" href='" . $self . "?page_no=" . $next . "'>Next</a></li>";
+                $output .= "<li  class=\"page-item\"><a class=\"page-link\" href='" . $self . "?page_no=" . $totalPages . "'>last</a></li>";
+            }
+            $output .= '</ul>';
+
+            return $output;
         }
     }
 }
