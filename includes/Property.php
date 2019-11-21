@@ -272,7 +272,7 @@ class Property extends DB
         return $query;
     }
 
-    public function pageLink($query = "SELECT * FROM properties ORDER BY id DESC ")
+    public function pageLinks($query = "SELECT * FROM properties ORDER BY id DESC ")
     {
         $self = $_SERVER['PHP_SELF'];
 
@@ -313,7 +313,7 @@ class Property extends DB
             }
             $output .= '</ul>';
 
-            return $output;
+            echo $output;
         }
     }
 }
